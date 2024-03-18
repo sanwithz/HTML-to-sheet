@@ -1,34 +1,64 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <!-- jquery@3.6.0 -->
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <!-- Sweet Alert -->
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
+
 <body>
   <input type="text" id="name" placeholder="Enter name">
+  <input type="file" id="file">
   <button id="submit">Submit</button>
+
   <script type="text/javascript">
     $(function () {
-      var url = 'https://script.google.com/macros/s/AKfycbwqS6VeEDM3Kay18lO27jCHFW_A6sMcjrlm0cDDqugtQ_2AuUxWqjFCo42y7JNaTadg/exec';
-      var params = {};
+      var url = 'https://script.google.com/macros/s/AKfycbwhUYgCK-0v97wPQxIPQrTYp5yNP-DT1Wf3RwZmaY-1MARplZLVDYszRZ1NY6YxZPXE/exec';
+
+      var params = {
+        filename: 'samplefile',
+        imageformat: 'PNG'
+      };
+
       $('#submit').on("click", function () {
         var name = $('#name').val().trim();
         if (!name) {
           Swal.fire({
             position: 'center',
             icon: 'warning',
-            title: 'Please enter a name',
+            title: 'กรุณากรอกชื่อด้วยครับ',
             showConfirmButton: false,
             timer: 1500
           })
           return;
         }
         params.name = name;
-        postJump();
+
+        var fileInput = $('#file')[0];
+        if (fileInput.files.length === 0) {
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'กรุณากรอกอัพโหลดภาพสลิปด้วยครับ',
+            showConfirmButton: false,
+            timer: 1500
+          })
+          return;
+        }
+
+        var file = fileInput.files[0];
+        var fr = new FileReader();
+        fr.onload = function (e) {
+          params.file = e.target.result.replace(/^.*,/, '');
+          postJump();
+        }
+        fr.readAsDataURL(file);
       });
+
       function postJump() {
         var html = '<form method="post" action="' + url + '" id="postjump" style="display: none;">';
         Object.keys(params).forEach(function (key) {
@@ -42,4 +72,5 @@
     });
   </script>
 </body>
+
 </html>
