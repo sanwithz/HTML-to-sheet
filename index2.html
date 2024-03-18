@@ -1,42 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML form to Google Sheet</title>
+  <!-- jquery@3.6.0 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <!-- Sweet Alert -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
 <body>
-  <h1 id="msg"></h1>
-  <form>
-    <input type="text" name="name" placeholder='Name'><br><br>
-    <input type="email" name="email" placeholder='Email'><br><br>
-    <input type="tel" name="phone" placeholder='Phone'><br><br>
-    <input type="submit" id="sub">
-  </form>
-  <script>
-    let form = document.querySelector("form");
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      document.querySelector("#sub").value = "Submiting..";
-      let data = new FormData(form);
-
-      //Your_Api_EndPoint_Url
-      fetch('https://script.google.com/macros/s/AKfycbxofHpS8PYtw_FZa-OK0oX-7tmTMZj8uYWNz2QLZ7usdAjTgu9l1CAvZjOlwPYXVDw6sw/exec',
-        {
-          method: "POST",
-          body: data
-        })
-        .then(res => res.text())
-        .then(data => {
-          document.querySelector("#msg").innerHTML = data;
-          document.querySelector("#sub").value = "Submit";
-          form.reset(); // reset the form
+  <input type="text" id="name" placeholder="Enter name">
+  <button id="submit">Submit</button>
+  <script type="text/javascript">
+    $(function () {
+      var url = 'https://script.google.com/macros/s/AKfycbwqS6VeEDM3Kay18lO27jCHFW_A6sMcjrlm0cDDqugtQ_2AuUxWqjFCo42y7JNaTadg/exec';
+      var params = {};
+      $('#submit').on("click", function () {
+        var name = $('#name').val().trim();
+        if (!name) {
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Please enter a name',
+            showConfirmButton: false,
+            timer: 1500
+          })
+          return;
+        }
+        params.name = name;
+        postJump();
+      });
+      function postJump() {
+        var html = '<form method="post" action="' + url + '" id="postjump" style="display: none;">';
+        Object.keys(params).forEach(function (key) {
+          html += '<input type="hidden" name="' + key + '" value="' + params[key] + '" >';
         });
-    })
+        html += '</form>';
+        $("body").append(html);
+        $('#postjump').submit();
+        $('#postjump').remove();
+      }
+    });
   </script>
 </body>
-
 </html>
