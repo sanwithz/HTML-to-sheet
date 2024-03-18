@@ -1,79 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-	<style>
-		*{
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-	font-family: 'poppins', sans-serif;
-	font-size: 18px;
-}
-body{
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.container{
-	width: 500px;
-	padding: 30px;
-	border: 1px solid #eeeeee;
-	border-radius: 10px;
-	background-color: #003b5b;
-}
-h4{
-	margin-bottom: 10px;
-	font-size: 24px;
-	color: white;
-}
-input{
-	width: 100%;
-	padding: 10px;
-	margin-bottom: 10px;
-}
-textarea{
-	width: 100%;
-	padding: 10px;
-}
-#submit{
-	border: none;
-	background-color: orangered;
-	color: white;
-	width: 200px;
-	margin-top: 10px;
-	border-radius: 5px;
-}
-#submit:hover{
-	background-color: #333333;
-}
-	</style>
+  <meta charset="UTF-8">
+  <!-- jquery@3.6.0 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <!-- Sweet Alert -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-	<div class="container">
-		<form method="post" action="" name="contact-form">
-			<h4>Contact Us</h4>
-			<input type="text" name="your-name" placeholder="Name">
-			<input type="text" name="your-number" placeholder="Number">
-			<input type="email" name="your-email" placeholder="Email">
-			<textarea name="message" rows="7" placeholder="Your Message"></textarea>
-			<input type="submit" value="Submit" id="submit">
-		</form>
-	</div>
-
-	<script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzlfPb6utuxtwOCnkcx_Qsha_b606b2KHIUUWwtkB5yFNhUs7bSRiKBH7hcVijlAP8/exec'
-
-const form = document.forms['contact-form']
-
-form.addEventListener('submit', e => {
-  e.preventDefault()
-  fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-  .then(response => alert("Thank you! your form is submitted successfully." ))
-  .then(() => { window.location.reload(); })
-  .catch(error => console.error('Error!', error.message))
-})
-	</script>
+  <input type="text" id="name" placeholder="Enter name">
+  <button id="submit">Submit</button>
+  <script type="text/javascript">
+    $(function () {
+      var url = 'https://script.google.com/macros/s/AKfycbxlz5AmZk4sPLMsx7tZ93ihvb-mH2Xzvk-pleojjkmXrT_1Ph-vdQPf6b0KnfLeJ8-IDA/exec';
+      var params = {};
+      $('#submit').on("click", function () {
+        var name = $('#name').val().trim();
+        if (!name) {
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Please enter a name',
+            showConfirmButton: false,
+            timer: 1500
+          })
+          return;
+        }
+        params.name = name;
+        postJump();
+      });
+      function postJump() {
+        var html = '<form method="post" action="' + url + '" id="postjump" style="display: none;">';
+        Object.keys(params).forEach(function (key) {
+          html += '<input type="hidden" name="' + key + '" value="' + params[key] + '" >';
+        });
+        html += '</form>';
+        $("body").append(html);
+        $('#postjump').submit();
+        $('#postjump').remove();
+      }
+    });
+  </script>
 </body>
 </html>
